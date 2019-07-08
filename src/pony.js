@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get('/svg', function (req, res, next) {
   // TODO use a pony image
-  var svg = fs.readFileSync(path.join(__dirname, '../public/node.svg'), 'utf8')
-    .replace(new RegExp('#8CC84B', 'g'), '#'+((1<<24)*Math.random()|0).toString(16));
+  var svg = fs.readFileSync(path.join(__dirname, '../public/pony.svg'), 'utf8')
+    .replace(new RegExp('#F791F6', 'gi'), '#'+((1<<24)*Math.random()|0).toString(16));
   res.setHeader('Content-Type', 'image/svg+xml');
   res.send(svg);
 });
