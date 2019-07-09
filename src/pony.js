@@ -3,18 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-router.get('/svg', function (req, res, next) {
-  const svg = fs.readFileSync(path.join(__dirname, '../public/pony.svg'), 'utf8')
-    .replace(new RegExp('#F791F6', 'gi'), '#'+((1<<24)*Math.random()|0).toString(16));
-  res.setHeader('Content-Type', 'image/svg+xml');
-  res.send(svg);
-});
-
-router.get('/name', function (req, res, next) {
-  // TODO randomize name. maybe fold this into the svg via a title element
-  res.send('Fritterfyre')
-});
-
 router.get('/', function (req, res, next) {
   let randomColor = () => '#'+((1<<24)*Math.random()|0).toString(16);
   let lightenDarkenColor = (col, amt) => {
@@ -35,19 +23,29 @@ router.get('/', function (req, res, next) {
     else if (g < 0) g = 0;
     return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
   };
+  let randomName = () => {
+    let randomNameFromFile = (filename) => {
+      const names = fs.readFileSync(filename).toString().split("\n");
+      return names[Math.floor(Math.random() * names.length)];
+    };
+    const givenName = randomNameFromFile(path.join(__dirname, '../public/names-start.txt'));
+    const familyName = randomNameFromFile(path.join(__dirname, '../public/names-end.txt'));
+    return `${givenName} ${familyName}`;
+  };
   const body = randomColor();
   const bodyDarker = lightenDarkenColor(body, -20);
   const hair = randomColor();
   const hairLighter = lightenDarkenColor(hair, 20);
+  const ponyName = randomName();
   // TODO implement SVG download
-  // TODO randomize name
   // TODO change cutie mark
   // TODO more pony images? unicorn? pegasus? etc.
   const svg = fs.readFileSync(path.join(__dirname, '../public/pony.svg'), 'utf8')
       .replace(new RegExp('#F791F6', 'gi'), body)
       .replace(new RegExp('#C76CCD', 'gi'), bodyDarker)
       .replace(new RegExp('#6D2AB7', 'gi'), hair)
-      .replace(new RegExp('#A85EE0', 'gi'), hairLighter);
+      .replace(new RegExp('#A85EE0', 'gi'), hairLighter)
+      .replace(new RegExp('Fritterfyre', 'gi'), ponyName);
   const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -74,7 +72,7 @@ router.get('/', function (req, res, next) {
         </style>
       </head>
       <body>
-        <h1>Fritterfyre</h1>
+        <h1>${ponyName}</h1>
         <div class="container">
           ${svg}
         </div>
