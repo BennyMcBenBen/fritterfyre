@@ -37,7 +37,6 @@ router.get('/', function (req, res, next) {
   const hair = randomColor();
   const hairLighter = lightenDarkenColor(hair, 20);
   const ponyName = randomName();
-  // TODO implement SVG download
   // TODO change cutie mark
   // TODO more pony images? unicorn? pegasus? etc.
   const svg = fs.readFileSync(path.join(__dirname, '../public/pony.svg'), 'utf8')
@@ -70,11 +69,22 @@ router.get('/', function (req, res, next) {
             left: 0;
           }
         </style>
+        <script type="text/javascript">
+          function download() {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:image/svg+xml;base64,' + btoa('${svg.replace(/\n/g, "")}'));
+            element.setAttribute('download', '${ponyName}.svg');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+        </script>
       </head>
       <body>
         <div>
-          <button>Download</button>
-          <button onClick="window.location.reload();">Refresh</button>
+          <button onclick="download();">Download</button>
+          <button onclick="window.location.reload();">Refresh</button>
         </div>
         <h1>${ponyName}</h1>
         <div class="container">
