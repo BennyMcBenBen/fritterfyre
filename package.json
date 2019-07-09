@@ -1,7 +1,7 @@
 {
   "name": "fritterfyre",
   "version": "0.0.1",
-  "description": "Pony factory",
+  "description": "A pony generator",
   "engines": {
     "node": "10.x"
   },
