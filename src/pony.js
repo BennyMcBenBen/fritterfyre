@@ -72,11 +72,14 @@ router.get('/', function (req, res, next) {
         </style>
       </head>
       <body>
+        <div>
+          <button>Download</button>
+          <button onClick="window.location.reload();">Refresh</button>
+        </div>
         <h1>${ponyName}</h1>
         <div class="container">
           ${svg}
         </div>
-        <button>Download</button>
       </body>
     </html>
   `;
