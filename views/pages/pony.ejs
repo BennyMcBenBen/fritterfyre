@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <title>Fritterfyre</title>
+        <style>
+          body {
+            text-align: center;
+            font-family: Fira Code, sans-serif;
+          }
+          h1 { 
+            height: 2rem;
+            margin: 0 0 1rem 0;
+            padding-top: 1rem;
+          }
+          .container {
+            height: calc(100vh - 4rem);
+          }
+          body {
+            height: 100vh;
+            margin:0
+          }
+          svg {
+            height: 100%;
+            width: 100%
+          }
+          #download {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            border: 1px solid black;
+            border-radius: 4px;
+            padding: 5px 10px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+          }
+        </style>
+        <script type="text/javascript">
+          function download() {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:image/svg+xml;base64,' + btoa('<%- svg %>'));
+            element.setAttribute('download', '<%- ponyName %>.svg');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+        </script>
+      </head>
+      <body>
+        <h1><%= ponyName %></h1>
+        <div class="container">
+          <%- svg %>
+        </div>
+          <button id="download" onclick="download()" type="button">⬇</button>
+      </body>
+    </html>
