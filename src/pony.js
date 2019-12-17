@@ -28,8 +28,8 @@ router.get('/', function (req, res, next) {
       const names = fs.readFileSync(filename).toString().split("\n");
       return names[Math.floor(Math.random() * names.length)];
     };
-    const givenName = randomNameFromFile(path.join(__dirname, '../public/names-start.txt'));
-    const familyName = randomNameFromFile(path.join(__dirname, '../public/names-end.txt'));
+    const givenName = randomNameFromFile(path.join(__dirname, '../assets/names-start.txt'));
+    const familyName = randomNameFromFile(path.join(__dirname, '../assets/names-end.txt'));
     return `${givenName} ${familyName}`;
   };
   const body = randomColor();
@@ -39,61 +39,15 @@ router.get('/', function (req, res, next) {
   const ponyName = randomName();
   // TODO change cutie mark
   // TODO more pony images? unicorn? pegasus? etc.
-  const svg = fs.readFileSync(path.join(__dirname, '../public/pony.svg'), 'utf8')
+  const svg = fs.readFileSync(path.join(__dirname, '../assets/pony.svg'), 'utf8')
       .replace(new RegExp('#F791F6', 'gi'), body)
       .replace(new RegExp('#C76CCD', 'gi'), bodyDarker)
       .replace(new RegExp('#6D2AB7', 'gi'), hair)
       .replace(new RegExp('#A85EE0', 'gi'), hairLighter)
-      .replace(new RegExp('Fritterfyre', 'gi'), ponyName);
-  const html = `
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <title>Fritterfyre</title>
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <style>
-          body {
-            text-align: center;
-            margin: auto auto 10px;
-          }
-          .container {
-            height: 0;
-            width: 100%;
-            padding-top: 90%;
-            position: relative;
-          }
-          svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-          }
-        </style>
-        <script type="text/javascript">
-          function download() {
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:image/svg+xml;base64,' + btoa('${svg.replace(/\n/g, "")}'));
-            element.setAttribute('download', '${ponyName}.svg');
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          }
-        </script>
-      </head>
-      <body>
-        <div>
-          <button onclick="download();">Download</button>
-          <button onclick="window.location.reload();">Refresh</button>
-        </div>
-        <h1>${ponyName}</h1>
-        <div class="container">
-          ${svg}
-        </div>
-      </body>
-    </html>
-  `;
-  res.send(html);
+      .replace(new RegExp('Fritterfyre', 'gi'), ponyName)
+      .replace(/\n/g, "");
+  
+  res.render('pages/pony', {svg: svg, ponyName: ponyName});
 });
 
 module.exports = router;
